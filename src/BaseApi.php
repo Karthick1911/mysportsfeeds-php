@@ -30,6 +30,11 @@ class BaseApi
         return "https://api.mysportsfeeds.com/v{$version}/pull";
     }
 
+    /*protected function __determineUrl($league, $season, $feed, $output, $params)
+    {
+        return "";
+    }*/
+
     # Verify a feed
     protected function __verifyFeedName($feed) {
         $isValid = false;
@@ -88,14 +93,14 @@ class BaseApi
             $this->storeOutput = $response;
         }
 
-        if ( $this->storeType == "file" ) {
-            if ( ! is_dir($this->storeLocation) ) {
-                mkdir($this->storeLocation, 0, true);
+        if ( $this->storeType == "file" || $this->storeType == null ) {
+            if ( ! is_dir(storage_path('app/public/') )) {
+                mkdir(storage_path('app/public/'), 0, true);
             }
 
             $filename = $this->__makeOutputFilename($league, $season, $feed, $outputFormat, $params);
 
-            file_put_contents($this->storeLocation . $filename, $response);
+            file_put_contents(storage_path('app/public/'). $filename, $response);
         }
     }
 
@@ -186,7 +191,7 @@ class BaseApi
         $resp = curl_exec($ch);
 
         // Uncomment the following if you're having trouble:
-        // print(curl_error($ch));
+         //print(curl_error($ch));
 
         // Get the response code and then close the curl handle
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -200,6 +205,7 @@ class BaseApi
 	        $this->__saveFeed($resp, $league, $season, $feed, $format, $params);
 
             $data = $this->storeOutput;
+
         } elseif ( $httpCode == 304 ) {
             if ( $this->verbose ) {
                 print("Data hasn't changed since last call.\n");

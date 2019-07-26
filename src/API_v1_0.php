@@ -29,16 +29,19 @@ class API_v1_0 extends BaseApi {
 		    'seasonal_player_stats',
 		    'seasonal_venues',
 		    'players',
-		    'seasonal_standings'
+		    'seasonal_standings',
+            'active_players',
+			'scoreboard'
         ];
+        parent::__construct($version,$verbose,$storeType = null,$storeLocation = null);
     }
 
     protected function __determineUrl($league, $season, $feed, $output, ...$params)
     {
         if ( $feed == 'current_season' ) {
-            return $this->baseUrl . "/" . $league . "/" . $feed . "." . $outputFormat;
+            return $this->baseUrl . "/" . $league . "/" . $feed . "." . $output;
         } else {
-            return $this->baseUrl . "/" . $league . "/" . $season . "/" . $feed . "." . $outputFormat;
+            return $this->baseUrl . "/" . $league . "/" . $season . "/" . $feed . "." . $output;
         }
     }
 

@@ -7,7 +7,7 @@ class API_v2_0 extends API_v1_2 {
     # Constructor
     public function __construct($version, $verbose, $storeType = null, $storeLocation = null) {
 
-		parent::__construct();
+		parent::__construct($version, $verbose, $storeType = null, $storeLocation = null);
 
         $this->validFeeds = [
 	  		'seasonal_games',
@@ -36,7 +36,7 @@ class API_v2_0 extends API_v1_2 {
         ];
     }
 
-    protected function __determineUrl($league, $season, $feed, $outputFormat, $params)
+    protected function __determineUrl($league, $season, $feed, $outputFormat, ...$params)
     {
         if ( $feed == 'seasonal_games' ) {
 	        if ( !$season ) {
@@ -100,10 +100,12 @@ class API_v2_0 extends API_v1_2 {
             return $this->baseUrl . "/" . $league . "/" . $season . "/player_gamelogs." . $outputFormat;
 
         } else if ( $feed == 'daily_player_gamelogs' ) {
+            $params = $params[0];
 	        if ( !$season ) {
 	            throw new \ErrorException("You must specify a season for this request.");
 	        }
-	        if ( !array_key_exists($params, "date") ) {
+
+	        if ( !array_key_exists("date", $params) ) {
 	            throw new \ErrorException("You must specify a 'date' param for this request.");
 	        }
 
